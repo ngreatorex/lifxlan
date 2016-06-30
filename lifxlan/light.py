@@ -1,7 +1,7 @@
 # light.py
 # Author: Meghan Clark
 
-from device import Device, WorkflowException
+from device import Device, WorkflowException, UDP_BROADCAST_IP
 from msgtypes import *
 
 RED = [62978, 65535, 65535, 3500]
@@ -18,8 +18,8 @@ WARM_WHITE = [58275, 0, 65535, 3200]
 GOLD = [58275, 0, 65535, 2500]
 
 class Light(Device):
-    def __init__(self, mac_addr, service, port, source_id, ip_addr, verbose=False):
-        super(Light, self).__init__(mac_addr, service, port, source_id, ip_addr, verbose)
+    def __init__(self, mac_addr, service, port, source_id, ip_addr, verbose=False, broadcast_ip=UDP_BROADCAST_IP):
+        super(Light, self).__init__(mac_addr, service, port, source_id, ip_addr, verbose, broadcast_ip)
         self.color = None
 
     ############################################################################

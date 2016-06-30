@@ -35,13 +35,14 @@ class Device(object):
     # mac_addr is a string, with the ":" and everything.
     # service is an integer that maps to a service type. See SERVICE_IDS in msgtypes.py
     # source_id is a number unique to this client, will appear in responses to this client
-    def __init__(self, mac_addr, service, port, source_id, ip_addr, verbose=False):
+    def __init__(self, mac_addr, service, port, source_id, ip_addr, verbose=False, broadcast_ip=UDP_BROADCAST_IP):
         self.verbose = verbose
         self.mac_addr = mac_addr
         self.port = port
         self.service = service
         self.source_id = source_id
         self.ip_addr = ip_addr # IP addresses can change, though...
+        self._broadcast_ip = broadcast_ip
 
         # The following attributes can be set by calling refresh(), but that 
         # takes time so it is not done by default during initialization.
@@ -315,7 +316,7 @@ class Device(object):
         sent_msg_count = 0
         sleep_interval = 0.05 if num_repeats > 20 else 0
         while(sent_msg_count < num_repeats):
-            self.sock.sendto(msg.packed_message, (UDP_BROADCAST_IP, self.port))
+            self.sock.sendto(msg.packed_message, (self._broadcast_ip, self.port))
             if self.verbose:
                 print("SEND: " + str(msg))
             sent_msg_count += 1
@@ -343,7 +344,7 @@ class Device(object):
             timedout = False
             while not response_seen and not timedout:
                 if not sent:
-                    self.sock.sendto(msg.packed_message, (UDP_BROADCAST_IP, self.port))
+                    self.sock.sendto(msg.packed_message, (self._broadcast_ip, self.port))
                     sent = True
                     if self.verbose:
                         print("SEND: " + str(msg))
